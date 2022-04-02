@@ -2,9 +2,7 @@ import React, {useState} from "react";
 import User from "./user";
 import {logDOM} from "@testing-library/react";
 
-const Users = (props) => {
-    const {users, onDelete, onToggleBookMark} = props
-
+const Users = ({users, onDelete, onToggleBookMark}) => {
     return (
         <>
             {users.length > 0 && (<table className="table">

@@ -4,7 +4,7 @@ import {logDOM} from "@testing-library/react";
 const BookMark = ({onToggleBookMark, id, status}) => {
     const getBookMarkClasses = () => {
         let classes = 'bi '
-        classes += status === true ? "bi-bookmark-fill" : "bi-bookmark"
+        classes += status ? "bi-bookmark-fill" : "bi-bookmark"
         return classes
     }
 
