@@ -2,7 +2,7 @@ import React from "react";
 import Qualitie from "./qualitie";
 import BookMark from "./bookmark";
 
-const User = ({user, onDelete}) => {
+const User = ({user, onDelete, onToggleBookMark}) => {
     return (
         <>
             <tr>
@@ -14,7 +14,7 @@ const User = ({user, onDelete}) => {
                 <td>{user.profession.name}</td>
                 <td>{user.completedMeetings}</td>
                 <td>{user.rate}/5</td>
-                <td><BookMark/></td>
+                <td><BookMark onToggleBookMark={onToggleBookMark} id={user._id} status={user.bookmark}/></td>
                 <td>
                     <button className="btn btn-danger" onClick={() => {
                         onDelete(user._id)

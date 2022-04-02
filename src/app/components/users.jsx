@@ -3,7 +3,7 @@ import User from "./user";
 import {logDOM} from "@testing-library/react";
 
 const Users = (props) => {
-    const {users, onDelete} = props
+    const {users, onDelete, onToggleBookMark} = props
 
     return (
         <>
@@ -20,7 +20,7 @@ const Users = (props) => {
                 </tr>
                 </thead>
                 <tbody>
-                {users.map((user) => <User key={user._id} user={user} onDelete={onDelete}/>)}
+                {users.map((user) => <User key={user._id} user={user} onDelete={onDelete} onToggleBookMark={onToggleBookMark}/>)}
                 </tbody>
             </table>)}
         </>

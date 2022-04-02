@@ -1,10 +1,17 @@
 import React from "react";
 import {logDOM} from "@testing-library/react";
 
-const BookMark = () => {
+const BookMark = ({onToggleBookMark, id, status}) => {
+    const getBookMarkClasses = () => {
+        let classes = 'bi '
+        classes += status === true ? "bi-bookmark-fill" : "bi-bookmark"
+        return classes
+    }
 
-return (
-    <button className='bi bi-bookmark'/>
-)
+    return (
+        <button className={getBookMarkClasses()} onClick={() => {
+            onToggleBookMark(id)
+        }}/>
+    )
 }
 export default BookMark
