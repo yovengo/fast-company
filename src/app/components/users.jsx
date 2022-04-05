@@ -1,11 +1,21 @@
 import React, {useState} from "react";
 import User from "./user";
-import {logDOM} from "@testing-library/react";
+import Pagination from "./pagination";
+import { paginate } from "../utils/paginate";
 
 const Users = ({users, onDelete, onToggleBookMark}) => {
+    const count = users.length
+    const pageSize = 4
+    const [currentPage, setCurrentPage] = useState(1)
+    const handlePageChange = (pageIndex) => {
+        setCurrentPage(pageIndex)
+    }
+
+    const userCrop = paginate(users, currentPage, pageSize)
+
     return (
         <>
-            {users.length > 0 && (<table className="table">
+            {count > 0 && (<table className="table">
                 <thead>
                 <tr>
                     <th scope="col">Имя</th>
@@ -18,9 +28,12 @@ const Users = ({users, onDelete, onToggleBookMark}) => {
                 </tr>
                 </thead>
                 <tbody>
-                {users.map((user) => <User key={user._id} user={user} onDelete={onDelete} onToggleBookMark={onToggleBookMark}/>)}
+                {userCrop.map((user) => <User key={user._id} user={user} onDelete={onDelete}
+                                           onToggleBookMark={onToggleBookMark}/>)}
                 </tbody>
             </table>)}
+            <Pagination itemsCount={count} pageSize={pageSize} currentPage={currentPage}
+                        onPageChange={handlePageChange}/>
         </>
     )
 }
