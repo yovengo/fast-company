@@ -3,7 +3,7 @@ import Users from "./components/users";
 import api from "./api";
 
 const App = () => {
-    const [users, setUsers] = useState(api.users.fetchAll());
+    const [users, setUsers] = useState();
     console.log(users);
     useEffect(() => {
         api.users.fetchAll().then((data) => {
