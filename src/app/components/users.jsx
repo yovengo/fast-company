@@ -27,6 +27,7 @@ const Users = ({ users, onDelete, onToggleBookMark }) => {
 
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
+        console.log(item);
     };
     const filteredUsers = selectedProf
         ? users.filter((user) => user.profession === selectedProf)

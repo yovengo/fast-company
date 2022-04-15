@@ -4,12 +4,11 @@ import api from "./api";
 
 const App = () => {
     const [users, setUsers] = useState();
-    console.log(users);
     useEffect(() => {
         api.users.fetchAll().then((data) => {
             setUsers(data);
         });
-    });
+    }, []);
 
     const handleDelete = (userId) => {
         setUsers((prevState) => {
@@ -30,11 +29,11 @@ const App = () => {
 
     return (
         <>
-            <Users
+            {users && <Users
                 users={users}
                 onDelete={handleDelete}
                 onToggleBookMark={handleToggleBookMark}
-            />
+            />}
         </>
     );
 };
