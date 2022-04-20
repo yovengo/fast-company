@@ -19,7 +19,7 @@ const UsersTable = ({ users, onDelete, onToggleBookMark, onSort, selectedSort })
                 <BookMark
                     id={user._id}
                     status={user.bookmark}
-                    onClick={() => onToggleBookMark(user._id)}
+                    onToggleBookMark={() => onToggleBookMark(user._id)}
                 />
             )
         },
