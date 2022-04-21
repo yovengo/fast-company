@@ -1,17 +1,42 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import User from "./user";
 import Pagination from "./pagination";
 import { paginate } from "../utils/paginate";
 import api from "../api";
 import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
+import UsersTable from "./usersTable";
+import _ from "lodash";
 
-const Users = ({ users, onDelete, onToggleBookMark }) => {
+const Users = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
-    const pageSize = 2;
+    const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    const pageSize = 8;
+
+    const [users, setUsers] = useState();
+    useEffect(() => {
+        api.users.fetchAll().then((data) => setUsers(data));
+    }, []);
+
+    const handleDelete = (userId) => {
+        setUsers((prevState) => {
+            return prevState.filter((user) => user._id !== userId);
+        });
+    };
+
+    const handleToggleBookMark = (userId) => {
+        setUsers(
+            users.map((user) => {
+                if (user._id === userId) {
+                    return { ...user, bookmark: !user.bookmark };
+                }
+                return user;
+            })
+        );
+    };
+
     useEffect(() => {
         api.professions.fetchAll().then((data) => {
             setProfessions(data);
@@ -28,70 +53,55 @@ const Users = ({ users, onDelete, onToggleBookMark }) => {
     const handleProfessionSelect = (item) => {
         setSelectedProf(item);
     };
-    const filteredUsers = selectedProf
-        ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
-        : users;
-    const count = filteredUsers.length;
-    const userCrop = paginate(filteredUsers, currentPage, pageSize);
-    const clearFilter = () => {
-        setSelectedProf();
+    const handleSort = (item) => {
+        setSortBy(item);
     };
 
-    return (
-        <div className="d-flex">
-            {professions && (
-                <div className="d-flex flex-column flex-shrink-0 p-3">
-                    <GroupList
-                        selectedItem={selectedProf}
-                        items={professions}
-                        onItemSelect={handleProfessionSelect}
-                    />
-                    <button className="btn btn-secondary mt-2" onClick={clearFilter}>Очистить</button>
-                </div>
-            )}
-            <div className="d-flex flex-column">
-                <SearchStatus length={count}/>
-                {count > 0 && (
+    if (users) {
+        const filteredUsers = selectedProf
+            ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
+            : users;
+        const count = filteredUsers.length;
+        const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
+        const userCrop = paginate(sortedUsers, currentPage, pageSize);
+        const clearFilter = () => {
+            setSelectedProf();
+        };
 
-                    <table className="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Имя</th>
-                                <th scope="col">Качества</th>
-                                <th scope="col">Профессия</th>
-                                <th scope="col">Встретился, раз</th>
-                                <th scope="col">Оценка</th>
-                                <th scope="col">Избранное</th>
-                                <th scope="col"/>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {userCrop.map((user) => (
-                                <User
-                                    key={user._id}
-                                    user={user}
-                                    onDelete={onDelete}
-                                    onToggleBookMark={onToggleBookMark}
-                                />
-                            ))}
-                        </tbody>
-                    </table>
+        return (
+            <div className="d-flex">
+                {professions && (
+                    <div className="d-flex flex-column flex-shrink-0 p-3">
+                        <GroupList
+                            selectedItem={selectedProf}
+                            items={professions}
+                            onItemSelect={handleProfessionSelect}
+                        />
+                        <button className="btn btn-secondary mt-2" onClick={clearFilter}>Очистить</button>
+                    </div>
                 )}
-                <div className="d-flex justify-content-center">
-                    <Pagination
-                        itemsCount={count}
-                        pageSize={pageSize}
-                        currentPage={currentPage}
-                        onPageChange={handlePageChange}
-                    />
+                <div className="d-flex flex-column">
+                    <SearchStatus length={count}/>
+                    {count > 0 && (
+                        <UsersTable onToggleBookMark={handleToggleBookMark} onDelete={handleDelete} onSort={handleSort} selectedSort={sortBy} users={userCrop}/>
+                    )}
+                    <div className="d-flex justify-content-center">
+                        <Pagination
+                            itemsCount={count}
+                            pageSize={pageSize}
+                            currentPage={currentPage}
+                            onPageChange={handlePageChange}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
-    );
+        );
+    }
+    return "loading...";
 };
 Users.propTypes = {
-    users: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onDelete: PropTypes.func.isRequired,
-    onToggleBookMark: PropTypes.func.isRequired
+    users: PropTypes.arrayOf(PropTypes.object),
+    onDelete: PropTypes.func,
+    onToggleBookMark: PropTypes.func
 };
 export default Users;
