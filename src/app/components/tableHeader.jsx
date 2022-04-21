@@ -10,6 +10,8 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
         }
     };
 
+    const caretClasses = selectedSort.order === "asc" ? "bi bi-caret-up-fill" : "bi bi-caret-down-fill";
+
     return (
         <thead>
             <tr>
@@ -17,14 +19,11 @@ const TableHeader = ({ onSort, selectedSort, columns }) => {
                     <th key={column}
                         onClick={columns[column].path ? () => handleSort(columns[column].path) : undefined}
                         {...{ role: columns[column].path && "button" }}
-                        scope="col">{columns[column].name}</th>
+                        scope="col">
+                        {columns[column].name}
+                        {columns[column].path === selectedSort.path ? <i className={caretClasses}/> : undefined}
+                    </th>
                 ))}
-                {/* <th scope="col">Качества</th> */}
-                {/* <th onClick={() => handleSort("profession.name")} scope="col">Профессия</th> */}
-                {/* <th onClick={() => handleSort("completedMeetings")} scope="col">Встретился, раз</th> */}
-                {/* <th onClick={() => handleSort("rate")} scope="col">Оценка</th> */}
-                {/* <th onClick={() => handleSort("bookmark")} scope="col">Избранное</th> */}
-                {/* <th scope="col"/> */}
             </tr>
         </thead>
     );
