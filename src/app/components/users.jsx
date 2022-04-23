@@ -21,9 +21,7 @@ const Users = () => {
     }, []);
 
     const handleDelete = (userId) => {
-        setUsers((prevState) => {
-            return prevState.filter((user) => user._id !== userId);
-        });
+        setUsers(users.filter((user) => user._id !== userId));
     };
 
     const handleToggleBookMark = (userId) => {
