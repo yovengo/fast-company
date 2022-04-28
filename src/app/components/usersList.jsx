@@ -8,7 +8,7 @@ import SearchStatus from "./searchStatus";
 import UsersTable from "./usersTable";
 import _ from "lodash";
 
-const Users = () => {
+const UsersList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
@@ -21,9 +21,7 @@ const Users = () => {
     }, []);
 
     const handleDelete = (userId) => {
-        setUsers((prevState) => {
-            return prevState.filter((user) => user._id !== userId);
-        });
+        setUsers(users.filter((user) => user._id !== userId));
     };
 
     const handleToggleBookMark = (userId) => {
@@ -99,9 +97,9 @@ const Users = () => {
     }
     return "loading...";
 };
-Users.propTypes = {
+UsersList.propTypes = {
     users: PropTypes.arrayOf(PropTypes.object),
     onDelete: PropTypes.func,
     onToggleBookMark: PropTypes.func
 };
-export default Users;
+export default UsersList;
