@@ -6,6 +6,7 @@ import api from "../api";
 import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
 import UsersTable from "./usersTable";
+import SearchLine from "./searchLine";
 import _ from "lodash";
 
 const UsersList = () => {
@@ -13,6 +14,7 @@ const UsersList = () => {
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    const [searchLineValue, setSearchLineValue] = useState("");
     const pageSize = 8;
 
     const [users, setUsers] = useState();
@@ -54,8 +56,16 @@ const UsersList = () => {
     const handleSort = (item) => {
         setSortBy(item);
     };
+    const handleSearchLineChange = ({ target }) => {
+        setSearchLineValue(target.value);
+    };
+
+    const searchLineRegExp = new RegExp(`${searchLineValue}`, "g");
 
     if (users) {
+        const searchedUsers = searchLineValue.length > 0
+            ? users.filter((user) => String(user.name).match(searchLineRegExp))
+            : users;
         const filteredUsers = selectedProf
             ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
             : users;
@@ -65,6 +75,7 @@ const UsersList = () => {
         const clearFilter = () => {
             setSelectedProf();
         };
+        console.log(searchedUsers);
 
         return (
             <div className="d-flex">
@@ -80,6 +91,7 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count}/>
+                    <SearchLine search={searchLineValue} onChange={handleSearchLineChange}/>
                     {count > 0 && (
                         <UsersTable onToggleBookMark={handleToggleBookMark} onDelete={handleDelete} onSort={handleSort} selectedSort={sortBy} users={userCrop}/>
                     )}
