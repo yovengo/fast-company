@@ -6,6 +6,7 @@ import api from "../api";
 import GroupList from "./groupList";
 import SearchStatus from "./searchStatus";
 import UsersTable from "./usersTable";
+import SearchLine from "./searchLine";
 import _ from "lodash";
 
 const UsersList = () => {
@@ -13,6 +14,7 @@ const UsersList = () => {
     const [professions, setProfessions] = useState();
     const [selectedProf, setSelectedProf] = useState();
     const [sortBy, setSortBy] = useState({ path: "name", order: "asc" });
+    const [searchLineValue, setSearchLineValue] = useState("");
     const pageSize = 8;
 
     const [users, setUsers] = useState();
@@ -49,16 +51,25 @@ const UsersList = () => {
     };
 
     const handleProfessionSelect = (item) => {
+        setSearchLineValue("");
         setSelectedProf(item);
     };
     const handleSort = (item) => {
         setSortBy(item);
     };
+    const handleSearchLineChange = ({ target }) => {
+        setSelectedProf(undefined);
+        setSearchLineValue(target.value);
+    };
+
+    const searchLineRegExp = new RegExp(`${searchLineValue.toLowerCase()}`, "g");
 
     if (users) {
-        const filteredUsers = selectedProf
-            ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
-            : users;
+        const filteredUsers = searchLineValue
+            ? users.filter((user) => String(user.name).toLowerCase().match(searchLineRegExp))
+            : selectedProf
+                ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
+                : users;
         const count = filteredUsers.length;
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
         const userCrop = paginate(sortedUsers, currentPage, pageSize);
@@ -80,6 +91,7 @@ const UsersList = () => {
                 )}
                 <div className="d-flex flex-column">
                     <SearchStatus length={count}/>
+                    <SearchLine search={searchLineValue} onChange={handleSearchLineChange}/>
                     {count > 0 && (
                         <UsersTable onToggleBookMark={handleToggleBookMark} onDelete={handleDelete} onSort={handleSort} selectedSort={sortBy} users={userCrop}/>
                     )}
