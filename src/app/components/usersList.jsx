@@ -51,31 +51,31 @@ const UsersList = () => {
     };
 
     const handleProfessionSelect = (item) => {
+        setSearchLineValue("");
         setSelectedProf(item);
     };
     const handleSort = (item) => {
         setSortBy(item);
     };
     const handleSearchLineChange = ({ target }) => {
+        setSelectedProf(undefined);
         setSearchLineValue(target.value);
     };
 
-    const searchLineRegExp = new RegExp(`${searchLineValue}`, "g");
+    const searchLineRegExp = new RegExp(`${searchLineValue.toLowerCase()}`, "g");
 
     if (users) {
-        const searchedUsers = searchLineValue.length > 0
-            ? users.filter((user) => String(user.name).match(searchLineRegExp))
-            : users;
-        const filteredUsers = selectedProf
-            ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
-            : users;
+        const filteredUsers = searchLineValue
+            ? users.filter((user) => String(user.name).toLowerCase().match(searchLineRegExp))
+            : selectedProf
+                ? users.filter((user) => JSON.stringify(user.profession) === JSON.stringify(selectedProf))
+                : users;
         const count = filteredUsers.length;
         const sortedUsers = _.orderBy(filteredUsers, [sortBy.path], [sortBy.order]);
         const userCrop = paginate(sortedUsers, currentPage, pageSize);
         const clearFilter = () => {
             setSelectedProf();
         };
-        console.log(searchedUsers);
 
         return (
             <div className="d-flex">
