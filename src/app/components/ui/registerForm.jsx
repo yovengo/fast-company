@@ -108,7 +108,7 @@ const RegisterForm = () => {
         if (!isValid) return;
         console.log({
             ...data,
-            professions: getProfessionById(professions),
+            profession: getProfessionById(professions),
             qualities: getQualities(qualities)
         });
     };
