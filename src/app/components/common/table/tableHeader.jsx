@@ -4,24 +4,38 @@ import PropTypes from "prop-types";
 const TableHeader = ({ onSort, selectedSort, columns }) => {
     const handleSort = (item) => {
         if (selectedSort.path === item) {
-            onSort({ ...selectedSort, order: selectedSort.order === "asc" ? "desc" : "asc" });
+            onSort({
+                ...selectedSort,
+                order: selectedSort.order === "asc" ? "desc" : "asc"
+            });
         } else {
             onSort({ path: item, order: "asc" });
         }
     };
 
-    const caretClasses = selectedSort.order === "asc" ? "bi bi-caret-up-fill" : "bi bi-caret-down-fill";
+    const caretClasses =
+        selectedSort.order === "asc"
+            ? "bi bi-caret-up-fill"
+            : "bi bi-caret-down-fill";
 
     return (
         <thead>
             <tr>
                 {Object.keys(columns).map((column) => (
-                    <th key={column}
-                        onClick={columns[column].path ? () => handleSort(columns[column].path) : undefined}
+                    <th
+                        key={column}
+                        onClick={
+                            columns[column].path
+                                ? () => handleSort(columns[column].path)
+                                : undefined
+                        }
                         {...{ role: columns[column].path && "button" }}
-                        scope="col">
-                        {columns[column].name}
-                        {columns[column].path === selectedSort.path ? <i className={caretClasses}/> : undefined}
+                        scope="col"
+                    >
+                        {columns[column].name}{" "}
+                        {columns[column].path === selectedSort.path ? (
+                            <i className={caretClasses} />
+                        ) : undefined}
                     </th>
                 ))}
             </tr>
