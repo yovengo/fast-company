@@ -4,18 +4,13 @@ import Quality from "./quality";
 import { useQualities } from "../../../hooks/useQualities";
 
 const QualitiesList = ({ qualities }) => {
-    const { getQuality, isLoading } = useQualities();
-    const userQualities = qualities.map((quality) => getQuality(quality));
+    const { isLoading } = useQualities();
 
     if (!isLoading) {
         return (
             <>
-                {userQualities.map((quality) => (
-                    <Quality
-                        key={quality._id}
-                        isLoading={isLoading}
-                        {...quality}
-                    />
+                {qualities.map((quality) => (
+                    <Quality key={quality} id={quality} />
                 ))}
             </>
         );
